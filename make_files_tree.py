@@ -534,56 +534,7 @@ async def collect_translations_paginated_content(url: str, session: aiohttp.Clie
 async def track_mtproto_methods():
     #####################
     # PATH BROKEN PYROGRAM
-    import pkgutil
-    from pathlib import Path
-    pyrogram_path = Path(pkgutil.get_loader('pyrogram').path).parent
-    broken_class_path = os.path.join(pyrogram_path, 'raw', 'types', 'story_fwd_header.py')
-    with open(broken_class_path, 'w', encoding='UTF-8') as f:
-        # I rly don't want to fix bug in pyrogram about using reserved words as argument names
-        f.write('class StoryFwdHeader: ...')
-    #####################
-
-    from pyrogram import Client
-
-    kw = {
-        'api_id': int(os.environ['TELEGRAM_API_ID']),
-        'api_hash': os.environ['TELEGRAM_API_HASH'],
-        'app_version': '@tgcrawl',
-        'in_memory': True
-    }
-
-    test_dc = 2
-    test_phone_prefix = '99966'
-    test_phone_suffix = os.environ.get('TELEGRAM_TEST_PHONE_SUFFIX', random.randint(1000, 9999))
-    test_phone_number = f'{test_phone_prefix}{test_dc}{test_phone_suffix}'
-    test_phone_code = str(test_dc) * 5
-
-    app_test = Client('crawler_test', phone_number=test_phone_number, phone_code=test_phone_code, test_mode=True, **kw)
-    app = Client('crawler', session_string=os.environ['TELEGRAM_SESSION'], **kw)
-
-    await asyncio.gather(app_test.start(), app.start())
-    await asyncio.gather(_fetch_and_track_mtproto(app, ''), _fetch_and_track_mtproto(app_test, 'test'))
-
-
-async def _fetch_and_track_mtproto(app, output_dir):
-    from pyrogram.raw import functions
-    from pyrogram.raw.types import InputStickerSetShortName
-
-    configs = {
-        'GetConfig': await app.invoke(functions.help.GetConfig()),
-        'GetCdnConfig': await app.invoke(functions.help.GetCdnConfig()),
-        # 'GetInviteText': await app.invoke(functions.help.GetInviteText()),
-        # 'GetSupport': await app.invoke(functions.help.GetSupport()),
-        # 'GetSupportName': await app.invoke(functions.help.GetSupportName()),
-        # 'GetPassportConfig': await app.invoke(functions.help.GetPassportConfig(hash=0)),
-        'GetCountriesList': await app.invoke(functions.help.GetCountriesList(lang_code='en', hash=0)),
-        'GetAppConfig': await app.invoke(functions.help.GetAppConfig(hash=0)),
-        # 'GetAppUpdate': await app.invoke(functions.help.GetAppUpdate(source='')),
-        # 'AnimatedEmoji': await app.invoke(
-        #     functions.messages.GetStickerSet(stickerset=InputStickerSetAnimatedEmoji(), hash=0)
-        # ),
-        'GetAvailableReactions': await app.invoke(functions.messages.GetAvailableReactions(hash=0)),
-        'GetPremiumPromo': await app.invoke(functions.help.GetPremiumPromo()),
+    impoapp.invoke(functions.help.GetPremiumPromo()),
     }
 
     sticker_set_short_names = {
